@@ -38,7 +38,7 @@ const App = () => {
 
   useEffect(() => {
     axios
-      .get<IActivity[]>("http://localhost:5000/api/activities")
+      .get<IActivity[]>("http://localhost:5050/api/activities")
       .then(response => {
         let activities: IActivity[] = [];
         response.data.forEach(activity => {
