@@ -41,7 +41,6 @@ class ActivityStore {
           this.activityRegistry.set(activity.id, activity);
         });
       });
-      console.log(this.groupActivitiesByDate(activities));
     } catch (error) {
       console.log(error);
     }
@@ -65,7 +64,7 @@ class ActivityStore {
           this.activity = activity;
         });
       } catch (error) {
-        console.log(error);
+        throw error;
       }
 
       runInAction("set loading to false", () => {
