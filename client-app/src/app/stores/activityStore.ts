@@ -108,6 +108,14 @@ export default class ActivityStore {
     this.submitting = true;
     try {
       await agent.Activities.create(activity);
+
+      const attendee = createAttendee(this.rootStore.userStore.user!);
+      attendee.isHost = true;
+      let attendees = [];
+      attendees.push(attendee);
+      activity.attendees = attendees;
+      activity.isHost = true;
+
       runInAction("after create", () => {
         this.activityRegistry.set(activity.id, activity);
       });
@@ -190,20 +198,17 @@ export default class ActivityStore {
     try {
       await agent.Activities.unattend(this.activity!.id);
 
-      runInAction(
-        "cancelling attendance",
-        () => {
-          this.loading = false;
-          if (this.activity) {
-            this.activity.attendees = this.activity.attendees.filter(
-              a => a.username != this.rootStore.userStore.user!.username
-            );
+      runInAction("cancelling attendance", () => {
+        this.loading = false;
+        if (this.activity) {
+          this.activity.attendees = this.activity.attendees.filter(
+            a => a.username != this.rootStore.userStore.user!.username
+          );
 
-            this.activity.isGoing = false;
-            this.activityRegistry.set(this.activity.id, this.activity);
-          }
-        })
-      );
+          this.activity.isGoing = false;
+          this.activityRegistry.set(this.activity.id, this.activity);
+        }
+      });
     } catch (error) {
       runInAction("error in cancel attend", () => {
         this.loading = false;
