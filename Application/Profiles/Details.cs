@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.util;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -26,14 +27,7 @@ namespace Application.Profiles
             {
                 var user = await _context.Users.SingleOrDefaultAsync(x => x.UserName == request.Username);
 
-                return new Profile
-                {
-                    DisplayName = user.DisplayName,
-                    Username = user.UserName,
-                    Image = user.Photos.FirstOrDefault(x => x.IsMain)?.Url,
-                    Photos = user.Photos,
-                    Bio = user.Bio
-                };
+                return Util.GenerateProfileFromUser(user);
             }
         }
     }
